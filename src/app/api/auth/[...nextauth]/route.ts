@@ -4,57 +4,64 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 
 const handler = NextAuth({
-  providers:[
-     CredentialsProvider({
-    name: 'Credentials',
-    credentials: {
-      email: { label: "Email", type: "email", placeholder: "your-email@example.com" },
-      password: { label: "Password", type: "password" , placeholder:"*******  "}
-    },
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "your-email@example.com" },
+        password: { label: "Password", type: "password", placeholder: "*******" }
+      },
     async authorize(credentials, req) {
+      if (!credentials?.email || !credentials?.password) {
+        return null;
+      }
 
-        credentials?.email
-        credentials?.password
-
-        const response= await apiServices.login(credentials?.email ?? "", credentials?.password ?? "")
-        console.log("resspnseee",response)
-      if(response.message== "success"){
-      const user = {id:response.user.email,
-         name:response.user.name, 
-         email:response.user.email,
-         role:response.user.role,
-         token:response.token
+      try {
+        const response = await apiServices.login(credentials.email, credentials.password);
+        console.log("API response", response);
+        if (response.message === "success") {
+          const user = {
+            id: response.user._id,
+            name: response.user.name,
+            email: response.user.email,
+            role: response.user.role,
+            token: response.token
+          };
+          console.log("Returning user:", user);
+          return user;
+        } else {
+          console.log("Login failed:", response.message);
+          return null;
         }
-        return user
-    }else{
-        return null
+      } catch (error) {
+        console.error("Login error:", error);
+        return null;
+      }
     }
-
-    }}) 
+    })
   ],
-  pages:{
-    signIn:'/auth/login'
+  pages: {
+    signIn: '/auth/login'
   },
-  callbacks:{
-    async session({session, token}){
-      if(session.user){
-      session.user.role = token.role as string ;
-      session.token = token.token as string;
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role as string;
+        session.token = token.token as string;
       }
       return session;
     },
-    async jwt ({token,user}) {
-      if(user){
-        token.token= user.token;
+    async jwt({ token, user }) {
+      if (user) {
+        token.token = user.token;
         token.role = user.role;
       }
       return token;
-      
     }
   },
-  secret:process.env.AUTH_SECRET,
-  session:{
-    strategy:"jwt"
+  secret: process.env.AUTH_SECRET,
+  session: {
+    strategy: "jwt"
   }
 })
 

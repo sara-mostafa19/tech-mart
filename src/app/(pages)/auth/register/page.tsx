@@ -50,26 +50,16 @@ export default function RegisterForm() {
         name: values.name,
         email: values.email,
         password: values.password,
+        rePassword: values.confirmPassword,
       })
       if (response.message === "success") {
         toast.success("Account created successfully!")
-        // Automatically sign in after signup
-        const signInResult = await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          redirect: false,
-        })
-        if (signInResult?.ok) {
-          router.push("/cart") // Or home page
-        } else {
-          toast.error("Signup successful, but login failed. Please log in manually.")
-          router.push("/auth/login")
-        }
+        router.push("/auth/login")
       } else {
         toast.error(response.message || "Signup failed")
       }
-    } catch (error) {
-      toast.error("An error occurred during signup")
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during signup")
     }
   }
 
@@ -131,7 +121,14 @@ export default function RegisterForm() {
             )}
           />
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Creating Account..." : "Sign Up"}
+            {form.formState.isSubmitting ? (
+              <div className="flex items-center justify-center">
+                
+                <span className="ml-2">Creating Account...</span>
+              </div>
+            ) : (
+              "Sign Up"
+            )}
           </Button>
         </form>
       </Form>

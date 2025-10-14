@@ -12,27 +12,27 @@ class ApiServices{
 
     async getAllProducts():Promise<ProductsResponse>{
             return await fetch(
-               this.#baseUrl+ "api/v1/products/"
+               this.#baseUrl+ "/api/v1/products/"
             ).then(res => res.json());
 
     }
 
     async getAllBrands():Promise<BrandsResponse>{
         return await fetch(
-           this.#baseUrl+ "api/v1/brands/"
+           this.#baseUrl+ "/api/v1/brands/"
         ).then(res => res.json());
 
     }
 
     async getAllCategories():Promise<CategoriesResponse>{
         return await fetch(
-           this.#baseUrl+ "api/v1/categories/"
+           this.#baseUrl+ "/api/v1/categories/"
         ).then(res => res.json());
 
     }
 
     async getProductDetails(productId:string | string[]):Promise<SingleProductResponse>{
-        return await fetch( this.#baseUrl+"api/v1/products/"+productId
+        return await fetch( this.#baseUrl+"/api/v1/products/"+productId
 
         ).then(res => res.json());
 
@@ -43,11 +43,11 @@ class ApiServices{
     #getHeaders(){
         return{
              "Content-Type":"application/json",
-                token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGQ3OWFiMWNiYzBiMDg3NWIxYTZiYyIsIm5hbWUiOiJqb3VkeSBtb3N0YWZhIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTk0MTAyMTYsImV4cCI6MTc2NzE4NjIxNn0.k1g_L_buhxHXO5LlPiRHk55XasaAQ25tNnx26DR77hM"
+                token: process.env.NEXT_PUBLIC_API_TOKEN || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGQ3OWFiMWNiYzBiMDg3NWIxYTZiYyIsIm5hbWUiOiJqb3VkeSBtb3N0YWZhIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTk0MTAyMTYsImV4cCI6MTc2NzE4NjIxNn0.k1g_L_buhxHXO5LlPiRHk55XasaAQ25tNnx26DR77hM"
         }
     }
     async addProductToCart(productId:string):Promise<AddToCartResponse>{
-        return await fetch(this.#baseUrl + "api/v1/cart",{
+        return await fetch(this.#baseUrl + "/api/v1/cart",{
             method:'post',
             body:JSON.stringify({
                 productId
@@ -57,27 +57,27 @@ class ApiServices{
     }
 
     async getUserCart():Promise<GetUserCartResponse>{
-        return  await fetch(this.#baseUrl + "api/v1/cart" , {
+        return  await fetch(this.#baseUrl + "/api/v1/cart" , {
             headers:this.#getHeaders()
         }).then(res => res.json())
 
     }
 
     async removeCartProduct(productId:string):Promise<any>{
-        return await fetch(this.#baseUrl + "api/v1/cart/" + productId, {
+        return await fetch(this.#baseUrl + "/api/v1/cart/" + productId, {
             headers: this.#getHeaders(),
             method:"delete"
         }).then(res => res.json())
     }
      async clearCart():Promise<any>{
-        return await fetch(this.#baseUrl + "api/v1/cart/" , {
+        return await fetch(this.#baseUrl + "/api/v1/cart/" , {
             headers: this.#getHeaders(),
             method:"delete"
         }).then(res => res.json())
     }
 
     async updateCartProductCount(productId:string, count:number):Promise<any>{
-        return await fetch(this.#baseUrl + "api/v1/cart/" + productId, {
+        return await fetch(this.#baseUrl + "/api/v1/cart/" + productId, {
             method:"put",
             body:JSON.stringify({
                 count
@@ -88,13 +88,13 @@ class ApiServices{
     }
 
     async getUserAddresses(): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/user/addresses", {
+        return await fetch(this.#baseUrl + "/api/v1/user/addresses", {
             headers: this.#getHeaders(),
         }).then(res => res.json());
     }
 
     async addUserAddress(address: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/user/addresses", {
+        return await fetch(this.#baseUrl + "/api/v1/user/addresses", {
             method: "POST",
             headers: this.#getHeaders(),
             body: JSON.stringify(address),
@@ -102,13 +102,13 @@ class ApiServices{
     }
 
     async removeUserAddress(addressId: string): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/user/addresses/" + addressId, {
+        return await fetch(this.#baseUrl + "/api/v1/user/addresses/" + addressId, {
             method: "DELETE",
             headers: this.#getHeaders(),
         }).then(res => res.json());
     }
     async createCashOrder(orderData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/orders/cash", {
+        return await fetch(this.#baseUrl + "/api/v1/orders/cash", {
             method: "POST",
             headers: this.#getHeaders(),
             body: JSON.stringify(orderData),
@@ -116,19 +116,19 @@ class ApiServices{
     }
 
     async getAllOrders(): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/orders", {
+        return await fetch(this.#baseUrl + "/api/v1/orders", {
             headers: this.#getHeaders(),
         }).then(res => res.json());
     }
 
     async getUserOrders(): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/orders/user", {
+        return await fetch(this.#baseUrl + "/api/v1/orders/user", {
             headers: this.#getHeaders(),
         }).then(res => res.json());
     }
 
     async createCheckoutSession(sessionData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/orders/checkout-session/" + sessionData.cartId, {
+        return await fetch(this.#baseUrl + "/api/v1/orders/checkout-session/" + sessionData.cartId, {
             method: "POST",
             headers: this.#getHeaders(),
             body: JSON.stringify({ addressId: sessionData.addressId, amount: sessionData.amount }),
@@ -136,7 +136,7 @@ class ApiServices{
     }
 
     async addToWishlist(productId: string): Promise<any> {
-        const res = await fetch(this.#baseUrl + "api/v1/wishlist", {
+        const res = await fetch(this.#baseUrl + "/api/v1/wishlist", {
             method: "POST",
             headers: this.#getHeaders(),
             body: JSON.stringify({ productId }),
@@ -147,7 +147,7 @@ class ApiServices{
     }
 
     async removeFromWishlist(productId: string): Promise<any> {
-        const res = await fetch(this.#baseUrl + "api/v1/wishlist/" + productId, {
+        const res = await fetch(this.#baseUrl + "/api/v1/wishlist/" + productId, {
             method: "DELETE",
             headers: this.#getHeaders(),
         });
@@ -157,7 +157,7 @@ class ApiServices{
     }
 
     async getUserWishlist(): Promise<any> {
-        const res = await fetch(this.#baseUrl + "api/v1/wishlist", {
+        const res = await fetch(this.#baseUrl + "/api/v1/wishlist", {
             headers: this.#getHeaders(),
         });
         const data = await res.json();
@@ -166,15 +166,20 @@ class ApiServices{
     }
 
     async signup(userData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/signup", {
+        const res = await fetch(this.#baseUrl + "/api/v1/auth/signup", {
             method: "POST",
             body: JSON.stringify(userData),
-            headers: this.#getHeaders()
-        }).then(res => res.json());
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Signup failed');
+        return data;
     }
 
     async forgotPassword(email: string): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/forgot-password", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/forgot-password", {
             method: "POST",
             body: JSON.stringify({ email }),
             headers: this.#getHeaders()
@@ -182,7 +187,7 @@ class ApiServices{
     }
 
     async verifyResetCode(email: string, resetCode: string): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/verify-reset-code", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/verify-reset-code", {
             method: "POST",
             body: JSON.stringify({ email, resetCode }),
             headers: this.#getHeaders()
@@ -190,7 +195,7 @@ class ApiServices{
     }
 
     async updateLoggedUserPassword(passwordData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/change-my-password", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/change-my-password", {
             method: "PUT",
             body: JSON.stringify(passwordData),
             headers: this.#getHeaders()
@@ -198,7 +203,7 @@ class ApiServices{
     }
 
     async resetPassword(resetData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/reset-password", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/reset-password", {
             method: "PUT",
             body: JSON.stringify(resetData),
             headers: this.#getHeaders()
@@ -206,7 +211,7 @@ class ApiServices{
     }
 
     async updateLoggedUserData(userData: any): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/me", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/me", {
             method: "PUT",
             body: JSON.stringify(userData),
             headers: this.#getHeaders()
@@ -214,25 +219,30 @@ class ApiServices{
     }
 
     async getAllUsers(): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/users", {
+        return await fetch(this.#baseUrl + "/api/v1/auth/users", {
             headers: this.#getHeaders()
         }).then(res => res.json());
     }
 
     async verifyToken(token: string): Promise<any> {
-        return await fetch(this.#baseUrl + "api/v1/auth/verify-token?token=" + token, {
+        return await fetch(this.#baseUrl + "/api/v1/auth/verify-token?token=" + token, {
             headers: this.#getHeaders()
         }).then(res => res.json());
     }
-    async login(email:string, password:string){
-        return await fetch(this.#baseUrl+"api/v1/auth/signin",{
-            body:JSON.stringify({
+    async login(email: string, password: string) {
+        const res = await fetch(this.#baseUrl + "/api/v1/auth/signin", {
+            body: JSON.stringify({
                 email,
                 password
             }),
-            headers:this.#getHeaders(),
-            method:"post"
-        }).then(res=> res.json())
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "post"
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Login failed');
+        return data;
     }
 }
 
